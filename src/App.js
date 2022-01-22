@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
+import AlbumView from './components/AlbumView'
+import ArtistView from './components/ArtistView'
 import Gallery from './components/Gallery'
 import Searchbar from './components/Searchbar'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 // App.js
 const App = () => {
@@ -16,6 +19,7 @@ const App = () => {
               document.title = `${search} music`
               const response = await fetch(API_URL + search)
               const resData = await response.json()
+              console.log(resData)
               if (resData.results.length > 0) {
                   return setData(resData.results)
               } else {
@@ -33,9 +37,19 @@ const App = () => {
 
   return (
       <div>
-          <Searchbar handleSearch={handleSearch} />
           {message}
-          <Gallery data={data} />
+          <Router>
+            <Routes>
+                <Route path = '/' element={
+                    <div>
+                        <Searchbar handleSearch={handleSearch}></Searchbar>
+                        <Gallery data={data}></Gallery>
+                    </div>
+                }/>
+                <Route path = '/album/:id' element={<AlbumView/>}/>
+                <Route path = '/artist/:id' element={<ArtistView/>}/>
+            </Routes>
+          </Router>
       </div>
   )
 }
